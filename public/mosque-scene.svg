@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0B2F55"/><stop offset="0.65" stop-color="#1A5FA0"/><stop offset="1" stop-color="#1BB0E8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="1" r="0.55">
+      <stop offset="0" stop-color="#7AD3F5" stop-opacity="0.6"/><stop offset="1" stop-color="#7AD3F5" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+  <g fill="#E6F6FF" opacity="0.8">
+    <circle cx="140" cy="90" r="2.2"/><circle cx="330" cy="170" r="1.6"/><circle cx="520" cy="60" r="2"/><circle cx="700" cy="140" r="1.5"/>
+    <circle cx="930" cy="70" r="2.2"/><circle cx="1110" cy="180" r="1.6"/><circle cx="1330" cy="55" r="2"/><circle cx="1490" cy="150" r="1.8"/>
+    <circle cx="240" cy="260" r="1.4"/><circle cx="1420" cy="290" r="1.4"/><circle cx="800" cy="250" r="1.2"/>
+  </g>
+  <path d="M1240 110 a62 62 0 1 0 52 94 a50 50 0 1 1 -52 -94z" fill="#E6F6FF"/>
+  <g fill="#06213F">
+    <path d="M590 640 A210 210 0 0 1 1010 640 Z"/>
+    <rect x="796" y="395" width="8" height="55"/><circle cx="800" cy="390" r="9"/>
+    <rect x="540" y="640" width="520" height="260"/>
+    <path d="M440 700 A62 62 0 0 1 564 700 Z"/><rect x="440" y="700" width="124" height="200"/>
+    <path d="M1036 700 A62 62 0 0 1 1160 700 Z"/><rect x="1036" y="700" width="124" height="200"/>
+    <g id="min">
+      <rect x="330" y="390" width="46" height="510"/><rect x="320" y="440" width="66" height="14"/><rect x="322" y="560" width="62" height="12"/>
+      <path d="M325 390 L353 320 L381 390 Z"/><rect x="351" y="290" width="4" height="34"/>
+    </g>
+    <use href="#min" x="896"/>
+  </g>
+  <g fill="#7AD3F5" opacity="0.85">
+    <path d="M770 800 v-60 a30 30 0 0 1 60 0 v60z"/>
+    <path d="M630 800 v-40 a20 20 0 0 1 40 0 v40z"/><path d="M930 800 v-40 a20 20 0 0 1 40 0 v40z"/>
+    <path d="M470 840 v-30 a15 15 0 0 1 30 0 v30z"/><path d="M1100 840 v-30 a15 15 0 0 1 30 0 v30z"/>
+  </g>
+</svg>

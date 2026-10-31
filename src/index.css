@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html { scroll-behavior: smooth; }
+
+.hero-fallback {
+  background: linear-gradient(120deg, #0B2F55, #1A5FA0, #1BB0E8, #1A5FA0, #0B2F55);
+  background-size: 300% 300%;
+  animation: heroShift 14s ease-in-out infinite;
+}
+@keyframes heroShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) { .hero-fallback { animation: none; } }
+
+.slide { opacity: 0; transform: scale(1); transition: opacity 1.5s ease, transform 12s ease-out; }
+.slide.on { opacity: 1; transform: scale(1.08); } /* slow zoom while visible */
+@media (prefers-reduced-motion: reduce) { .slide { transition: none; transform: none !important; } }
