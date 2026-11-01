@@ -4,6 +4,7 @@ import { PageTitle } from "@/Layout";
 import { request } from "@/lib/api";
 import { hashQuery } from "@/lib/hooks";
 import { waLink } from "@/lib/utils";
+import { Chip, LinkButton } from "@/components/ui/kit";
 import { BOOKING_DAYS_AHEAD, BOOKING_SLOTS, CONSULTATION_TYPES, WHATSAPP } from "@/config";
 
 const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -32,11 +33,11 @@ const Field = ({ id, label, error, hint, children }) => (
   <div>
     <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-navy">{label}</label>
     {children}
-    {hint && !error && <p id={`${id}-d`} className="mt-1 text-xs text-navy-deep/60">{hint}</p>}
-    {error && <p id={`${id}-d`} role="alert" className="mt-1 text-xs text-red-700">{error}</p>}
+    {hint && !error && <p id={`${id}-d`} className="faint mt-1">{hint}</p>}
+    {error && <p id={`${id}-d`} role="alert" className="err mt-1 !text-xs">{error}</p>}
   </div>
 );
-const inp = (bad) => `w-full rounded-xl border bg-white px-4 py-3 text-sm text-navy-deep placeholder-navy-deep/40 focus:outline-none focus:ring-2 focus:ring-mid/40 ${bad ? "border-red-500" : "border-mid/40 focus:border-mid"}`;
+const inp = () => "field";
 
 export default function BookPage() {
   const q = useMemo(hashQuery, []);
@@ -94,14 +95,14 @@ export default function BookPage() {
     return (
       <>
         <PageTitle eyebrow="Appointment" title="Request received" />
-        <section className="mx-auto max-w-xl px-4 py-10">
-          <div role="status" className="rounded-2xl border border-mid/30 bg-white p-6 text-center md:p-8">
+        <section className="wrap-sm page-body">
+          <div role="status" className="panel text-center md:!p-8">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-sky text-mid"><Check size={28} /></span>
-            <h2 className="mt-4 font-display text-2xl text-navy">Thank you, {clean(sent.name).split(" ")[0]}</h2>
+            <h2 className="mt-4 text-2xl">Thank you, {clean(sent.name).split(" ")[0]}</h2>
             <p className="mt-2 text-navy-deep/75">We received your request for <b>{when}</b> ({sent.type}). Our team will call or message you on <b>{sent.phone}</b> to confirm. It is not confirmed until you hear from us.</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <a href={waLink(WHATSAPP, `Assalamu alaikum, I requested an appointment for ${sent.date} at ${sent.time} (${sent.type}).`)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-navy-deep hover:bg-accent-light"><MessageCircle size={16} />Message us on WhatsApp</a>
-              <a href="#/packages" className="rounded-full border border-navy px-6 py-3 text-center text-sm text-navy hover:bg-sky">Browse packages meanwhile</a>
+              <LinkButton href={waLink(WHATSAPP, `Assalamu alaikum, I requested an appointment for ${sent.date} at ${sent.time} (${sent.type}).`)} target="_blank" rel="noopener noreferrer"><MessageCircle size={16} />Message us on WhatsApp</LinkButton>
+              <LinkButton href="#/packages" variant="outline">Browse packages meanwhile</LinkButton>
             </div>
           </div>
         </section>
@@ -113,8 +114,8 @@ export default function BookPage() {
   return (
     <>
       <PageTitle eyebrow="Free consultation" title="Book an appointment">Tell us when suits you. An advisor will confirm by phone or WhatsApp. No payment is taken on this page.</PageTitle>
-      <section className="mx-auto grid max-w-5xl gap-8 px-4 py-8 md:px-8 lg:grid-cols-[1fr_300px]">
-        <form ref={formRef} onSubmit={submit} noValidate className="space-y-5 rounded-2xl border border-mid/30 bg-white p-5 md:p-8">
+      <section className="wrap-md page-body grid gap-8 lg:grid-cols-[1fr_300px]">
+        <form ref={formRef} onSubmit={submit} noValidate className="panel space-y-5 md:!p-8">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field id="name" label="Full name" error={err.name}>
               <input id="name" name="name" autoComplete="name" maxLength={80} value={f.name} onChange={set("name")} placeholder="Your name" className={inp(err.name)} {...invalid("name")} />
@@ -126,11 +127,8 @@ export default function BookPage() {
 
           <fieldset>
             <legend className="mb-1.5 text-sm font-medium text-navy">I am interested in</legend>
-            <div className="flex gap-2" role="radiogroup">
-              {[["umrah", "Umrah"], ["hajj", "Hajj"]].map(([v, l]) => (
-                <button type="button" key={v} role="radio" aria-checked={f.kind === v} onClick={() => setF((p) => ({ ...p, kind: v }))}
-                  className={`flex-1 rounded-xl border px-4 py-3 text-sm transition ${f.kind === v ? "border-navy bg-navy text-white" : "border-mid/40 bg-white text-navy hover:border-navy"}`}>{l}</button>
-              ))}
+            <div className="flex gap-2" role="radiogroup" aria-label="I am interested in">
+              {[["umrah", "Umrah"], ["hajj", "Hajj"]].map(([v, l]) => <Chip key={v} radio on={f.kind === v} onClick={() => setF((p) => ({ ...p, kind: v }))} className="flex-1 !py-3">{l}</Chip>)}
             </div>
           </fieldset>
 
@@ -154,9 +152,9 @@ export default function BookPage() {
 
           <Field id="travellers" label="Number of travellers" error={err.travellers}>
             <div className="flex w-fit items-center gap-2">
-              <button type="button" aria-label="Fewer travellers" onClick={() => step(-1)} className="rounded-full border border-mid/40 p-2.5 text-navy hover:bg-sky"><Minus size={16} /></button>
-              <input id="travellers" name="travellers" type="number" inputMode="numeric" min={1} max={50} value={f.travellers} onChange={set("travellers")} className={`${inp(err.travellers)} w-20 text-center`} {...invalid("travellers")} />
-              <button type="button" aria-label="More travellers" onClick={() => step(1)} className="rounded-full border border-mid/40 p-2.5 text-navy hover:bg-sky"><Plus size={16} /></button>
+              <button type="button" aria-label="Fewer travellers" onClick={() => step(-1)} className="round-btn !h-11 !w-11"><Minus size={16} /></button>
+              <input id="travellers" name="travellers" type="number" inputMode="numeric" min={1} max={50} value={f.travellers} onChange={set("travellers")} className="field w-20 text-center" {...invalid("travellers")} />
+              <button type="button" aria-label="More travellers" onClick={() => step(1)} className="round-btn !h-11 !w-11"><Plus size={16} /></button>
             </div>
           </Field>
 
@@ -169,26 +167,26 @@ export default function BookPage() {
             <label>Website<input tabIndex={-1} autoComplete="off" name="website" value={f.website} onChange={set("website")} /></label>
           </div>
 
-          <button disabled={st === "sending"} className="w-full rounded-full bg-accent py-3.5 text-sm font-medium text-navy-deep transition hover:bg-accent-light disabled:opacity-60">
+          <button disabled={st === "sending"} className="btn btn-accent btn-block">
             {st === "sending" ? "Sending…" : "Request appointment"}
           </button>
           <div aria-live="polite">
-            {st === "error" && <p role="alert" className="text-center text-sm text-red-700">{apiErr || "We could not send your request. Please try again, or use WhatsApp."}</p>}
-            {st === "limited" && <p role="alert" className="text-center text-sm text-red-700">Too many requests from this connection. Please try again later or message us on WhatsApp.</p>}
-            {st === "wait" && <p role="alert" className="text-center text-sm text-red-700">You just sent a request. Please wait a few seconds before sending another.</p>}
+            {st === "error" && <p role="alert" className="err text-center">{apiErr || "We could not send your request. Please try again, or use WhatsApp."}</p>}
+            {st === "limited" && <p role="alert" className="err text-center">Too many requests from this connection. Please try again later or message us on WhatsApp.</p>}
+            {st === "wait" && <p role="alert" className="err text-center">You just sent a request. Please wait a few seconds before sending another.</p>}
           </div>
         </form>
 
         <aside className="space-y-4 text-sm text-navy-deep/80">
-          <div className="rounded-2xl border border-mid/30 bg-white p-5">
-            <h2 className="flex items-center gap-2 font-display text-lg text-navy"><CalendarDays size={18} className="text-mid" />What happens next</h2>
+          <div className="panel">
+            <h2 className="flex items-center gap-2 text-lg"><CalendarDays size={18} className="text-mid" />What happens next</h2>
             <ol className="mt-3 list-decimal space-y-2 pl-5"><li>You send this form.</li><li>An advisor contacts you to confirm the time.</li><li>We talk through your plans. You get a written quotation before any payment.</li></ol>
           </div>
-          <div className="rounded-2xl border border-mid/30 bg-white p-5">
-            <h2 className="flex items-center gap-2 font-display text-lg text-navy"><ShieldCheck size={18} className="text-mid" />Your details</h2>
+          <div className="panel">
+            <h2 className="flex items-center gap-2 text-lg"><ShieldCheck size={18} className="text-mid" />Your details</h2>
             <p className="mt-2">We use your name and number only to contact you about this request. Please do not share passport or card numbers here.</p>
           </div>
-          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-full border border-navy px-5 py-3 text-navy hover:bg-sky"><Clock size={16} />Need a faster answer? WhatsApp</a>
+          <LinkButton href={WHATSAPP} target="_blank" rel="noopener noreferrer" variant="outline" block><Clock size={16} />Need a faster answer? WhatsApp</LinkButton>
         </aside>
       </section>
     </>

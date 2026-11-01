@@ -1,20 +1,21 @@
 import { useMemo, useState } from "react";
 import { Minus, Plus } from "lucide-react";
 import { EST } from "@/data";
-import { taka, cn } from "@/lib/utils";
+import { taka } from "@/lib/utils";
 import { PageTitle, WHATSAPP } from "@/Layout";
+import { LinkButton } from "@/components/ui/kit";
 
 const Stepper = ({ label, value, set, min = 0, max = 20, hint }) => (
   <div className="flex items-center justify-between gap-3 py-2">
-    <div><p className="text-sm font-medium text-navy">{label}</p>{hint && <p className="text-xs text-navy-deep/60">{hint}</p>}</div>
+    <div><p className="text-sm font-medium text-navy">{label}</p>{hint && <p className="faint">{hint}</p>}</div>
     <div className="flex items-center gap-2">
-      <button aria-label={`Fewer ${label}`} onClick={() => set(Math.max(min, value - 1))} className="flex h-8 w-8 items-center justify-center rounded-full border border-mid/40 text-navy"><Minus size={14} /></button>
+      <button aria-label={`Fewer ${label}`} onClick={() => set(Math.max(min, value - 1))} type="button" className="round-btn !h-8 !w-8"><Minus size={14} /></button>
       <span className="w-6 text-center tabular-nums" aria-live="polite">{value}</span>
-      <button aria-label={`More ${label}`} onClick={() => set(Math.min(max, value + 1))} className="flex h-8 w-8 items-center justify-center rounded-full border border-mid/40 text-navy"><Plus size={14} /></button>
+      <button aria-label={`More ${label}`} onClick={() => set(Math.min(max, value + 1))} type="button" className="round-btn !h-8 !w-8"><Plus size={14} /></button>
     </div>
   </div>
 );
-const Card = ({ title, children }) => <section className="rounded-2xl border border-mid/30 bg-white p-5 md:p-6"><h2 className="mb-2 font-display text-lg text-navy">{title}</h2>{children}</section>;
+const Card = ({ title, children }) => <section className="panel"><h2 className="mb-2 text-lg">{title}</h2>{children}</section>;
 
 function compute(s) {
   const { adults, children, infants, occ, mk, md } = s;
@@ -50,7 +51,7 @@ export default function EstimatorPage() {
   return (
     <>
       <PageTitle eyebrow="Umrah cost estimator" title="Estimate your Umrah">Umrah can be taken any time, for any length, so the price depends on your choices. Change anything and the estimate updates. Hajj is sold at fixed seasonal prices, so use the Hajj finder for that.</PageTitle>
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 md:px-8 lg:grid-cols-[1fr_380px]">
+      <div className="wrap page-body grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="space-y-5">
           <Card title="Who is travelling">
             <Stepper label="Adults" value={s.adults} set={(v) => setS((p) => ({ ...p, adults: v }))} min={1} />
@@ -65,32 +66,32 @@ export default function EstimatorPage() {
           {EST.choices.map((c) => (
             <Card key={c.id} title={c.label}>
               <div className="grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label={c.label}>
-                {c.optional && <button role="radio" aria-checked={!s.choice[c.id]} onClick={() => setS((p) => ({ ...p, choice: { ...p.choice, [c.id]: null } }))} className={cn("rounded-xl border px-4 py-3 text-left text-sm", !s.choice[c.id] ? "border-navy bg-sky" : "border-mid/30")}><b className="block text-navy">None</b><span className="text-navy-deep/65">Skip this</span></button>}
+                {c.optional && <button type="button" role="radio" aria-checked={!s.choice[c.id]} onClick={() => setS((p) => ({ ...p, choice: { ...p.choice, [c.id]: null } }))} className="choice"><b className="block text-navy">None</b><span className="muted">Skip this</span></button>}
                 {c.options.map(([id, label, sub, price]) => (
-                  <button key={id} role="radio" aria-checked={s.choice[c.id] === id} onClick={() => setS((p) => ({ ...p, choice: { ...p.choice, [c.id]: id } }))} className={cn("rounded-xl border px-4 py-3 text-left text-sm transition", s.choice[c.id] === id ? "border-navy bg-sky" : "border-mid/30 hover:border-navy")}>
-                    <b className="block text-navy">{label}</b><span className="block text-navy-deep/65">{sub}</span><span className="mt-1 block text-mid">{taka(price)}{c.unit === "person" ? " per person" : c.unit === "room-night" ? " per room per night" : " per person per night"}</span></button>))}
+                  <button type="button" key={id} role="radio" aria-checked={s.choice[c.id] === id} onClick={() => setS((p) => ({ ...p, choice: { ...p.choice, [c.id]: id } }))} className="choice">
+                    <b className="block text-navy">{label}</b><span className="muted block">{sub}</span><span className="mt-1 block text-mid">{taka(price)}{c.unit === "person" ? " per person" : c.unit === "room-night" ? " per room per night" : " per person per night"}</span></button>))}
               </div>
             </Card>))}
           <Card title="Add-ons">
-            {EST.toggles.map((t) => <label key={t.id} className="flex items-center justify-between gap-3 py-2 text-sm"><span className="flex items-center gap-2"><input type="checkbox" checked={!!s.toggle[t.id]} onChange={(e) => setS((p) => ({ ...p, toggle: { ...p.toggle, [t.id]: e.target.checked } }))} />{t.label}</span><span className="text-navy-deep/65">{taka(t.price)} per person</span></label>)}
+            {EST.toggles.map((t) => <label key={t.id} className="flex items-center justify-between gap-3 py-2 text-sm"><span className="flex items-center gap-2"><input type="checkbox" checked={!!s.toggle[t.id]} onChange={(e) => setS((p) => ({ ...p, toggle: { ...p.toggle, [t.id]: e.target.checked } }))} />{t.label}</span><span className="muted">{taka(t.price)} per person</span></label>)}
             {EST.quantities.map((q) => <Stepper key={q.id} label={q.label} value={s.qty[q.id] || 0} set={(v) => setS((p) => ({ ...p, qty: { ...p.qty, [q.id]: v } }))} hint={`${taka(q.price)} each`} />)}
           </Card>
         </div>
 
-        <aside className="h-fit rounded-2xl border border-mid/30 bg-white p-6 shadow-sm lg:sticky lg:top-24">
-          <h2 className="font-display text-lg text-navy">Your estimate</h2>
+        <aside className="panel panel-lift h-fit lg:sticky lg:top-24">
+          <h2 className="text-lg">Your estimate</h2>
           <div className="mt-3 max-h-[46vh] space-y-4 overflow-y-auto pr-1 text-sm">
-            {groups.map((g) => (<div key={g}><p className="text-xs uppercase tracking-wider text-mid">{g}</p>
-              {r.lines.filter((l) => l.group === g).map((l) => <div key={l.label} className="mt-1.5 flex justify-between gap-3"><div><p className="text-navy">{l.label}</p><p className="text-xs text-navy-deep/55">{l.detail}</p></div><span className="shrink-0 tabular-nums">{taka(l.amount)}</span></div>)}</div>))}
+            {groups.map((g) => (<div key={g}><p className="label !text-mid">{g}</p>
+              {r.lines.filter((l) => l.group === g).map((l) => <div key={l.label} className="mt-1.5 flex justify-between gap-3"><div><p className="text-navy">{l.label}</p><p className="faint">{l.detail}</p></div><span className="shrink-0 tabular-nums">{taka(l.amount)}</span></div>)}</div>))}
           </div>
           <dl className="mt-4 space-y-1 border-t border-mid/20 pt-3 text-sm text-navy-deep/75">
             <div className="flex justify-between"><dt>Subtotal</dt><dd>{taka(r.sub)}</dd></div>
             <div className="flex justify-between"><dt>Service charge ({EST.serviceChargePct}%)</dt><dd>{taka(r.service)}</dd></div>
             <div className="flex justify-between"><dt>Price-change buffer ({EST.contingencyPct}%)</dt><dd>{taka(r.cont)}</dd></div>
           </dl>
-          <div className="mt-3 border-t border-mid/20 pt-3"><p className="text-xs text-navy-deep/60">Estimated total for the group · {r.rooms} room{r.rooms > 1 ? "s" : ""}</p><p className="font-display text-3xl text-navy">{taka(r.total)}</p><p className="text-xs text-navy-deep/60">About {taka(r.perPerson)} per person</p></div>
-          <a href={`${WHATSAPP}?text=${encodeURIComponent(`I estimated Umrah for ${s.adults} adult(s), ${s.children} child(ren), ${s.infants} infant(s): ${taka(r.total)}. Please send a confirmed quotation.`)}`} className="mt-4 block rounded-full bg-accent py-3 text-center text-sm font-medium text-navy-deep hover:bg-accent-light">Request confirmed quotation</a>
-          <p className="mt-3 text-xs text-navy-deep/60">This is an estimate, not an offer. Flights, hotels and exchange rates change.</p>
+          <div className="mt-3 border-t border-mid/20 pt-3"><p className="faint">Estimated total for the group · {r.rooms} room{r.rooms > 1 ? "s" : ""}</p><p className="price !text-3xl">{taka(r.total)}</p><p className="faint">About {taka(r.perPerson)} per person</p></div>
+          <LinkButton block className="mt-4" target="_blank" rel="noopener noreferrer" href={`${WHATSAPP}?text=${encodeURIComponent(`I estimated Umrah for ${s.adults} adult(s), ${s.children} child(ren), ${s.infants} infant(s): ${taka(r.total)}. Please send a confirmed quotation.`)}`}>Request confirmed quotation</LinkButton>
+          <p className="faint mt-3">This is an estimate, not an offer. Flights, hotels and exchange rates change.</p>
         </aside>
       </div>
     </>

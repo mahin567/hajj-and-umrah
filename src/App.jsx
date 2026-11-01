@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import HomePage from "@/HomePage";
 import { Header, Footer } from "@/Layout";
+import { Skeleton } from "@/components/ui/kit";
 
 // Each page is its own chunk, so the home page loads fast and other pages download only when opened.
 const PackagesPage = lazy(() => import("@/pages/PackagesPage"));
@@ -22,7 +23,7 @@ const SITE = "Own The World – Hajj & Umrah";
 // Hash routes (#/packages). Plain anchors like #faq are not routes, so the home page keeps its in-page links.
 const route = () => (location.hash.startsWith("#/") ? location.hash.slice(2).split("?")[0] : "");
 
-const Loading = () => <div role="status" className="mx-auto max-w-7xl px-4 py-24 text-center text-navy-deep/60">Loading…</div>;
+const Loading = () => <div role="status" aria-label="Loading page" className="wrap page-body"><Skeleton className="h-64" /></div>;
 
 export default function App() {
   const [path, setPath] = useState(route());
@@ -52,7 +53,7 @@ export default function App() {
   else if (page === "hotels") view = <HotelsPage />;
   if (!view) return <HomePage />;
   return (
-    <div className="min-h-screen bg-cream font-sans text-navy-deep">
+    <div className="min-h-screen">
       <Header />
       <main><Suspense fallback={<Loading />}>{view}</Suspense></main>
       <Footer />

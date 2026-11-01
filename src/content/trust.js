@@ -19,6 +19,6 @@ export const POLICIES = [
 export const BOARD = [];
 export const TEAM = [];
 
-// Extra success stories you write yourself (with the pilgrim's consent): { name, text }
+// Extra success stories you write yourself (with the pilgrim's consent): { name, text, role?, photo? }
 // Approved reviews from the admin also appear automatically.
 export const STORIES = [];
