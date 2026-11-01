@@ -52,7 +52,7 @@ export function evaluate(pkg, sel, must = []) {
 }
 
 export const rank = (sel, must = []) =>
-  PACKAGES.map((p) => evaluate(p, sel, must)).filter((r) => !r.excluded).sort((a, b) => b.percent - a.percent || a.price - b.price);
+  PACKAGES.map((p) => evaluate(p, sel, must)).filter((r) => !r.excluded).sort((a, b) => b.percent - a.percent || a.pkg.order - b.pkg.order); // equal matches keep the brochure order
 
 // Only offer answers that at least one live package can honour
 export function options() {

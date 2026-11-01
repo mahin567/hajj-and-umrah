@@ -1,16 +1,18 @@
 import { useMemo, useState } from "react";
-import { Building2, ExternalLink, Search } from "lucide-react";
+import { Building2, Check, ExternalLink, Plus, Search } from "lucide-react";
 import { CarouselCard, CarouselSection } from "@/components/ui/carousel-cards";
 import { PageTitle, ZoneBadge, Empty } from "@/Layout";
 import { HOTELS } from "@/content/hotels";
 import { PACKAGES, zoneFor } from "@/data";
 import { DIST_METHOD as METHOD } from "@/lib/utils";
 import { Chip, FilterBar, SortSelect, ResultCount } from "@/components/ui/kit";
+import { pickHotel, clearHotel, useEstimateHotels } from "@/lib/estimateHotels";
 
 const validCoord = (h) => Number.isFinite(h.lat) && Number.isFinite(h.lng) && Math.abs(h.lat) <= 90 && Math.abs(h.lng) <= 180;
 const PLACE = { Makkah: "Masjid al-Haram", Madinah: "Masjid an-Nabawi" };
 
 function HotelCard({ h }) {
+  const picked = useEstimateHotels()[h.city]?.id === h.id;
   const zone = zoneFor(h.distanceM);
   const used = h.packages.map((p) => p.title.replace(" Hajj", "").replace(" Package", "").replace(" 2027", "")).join(", ");
   return (
@@ -19,6 +21,7 @@ function HotelCard({ h }) {
       imageAlt={`${h.name}, ${h.city}`}
       placeholder={<Building2 size={44} />}
       badge={h.city}
+      action={<button type="button" aria-pressed={picked} onClick={() => (picked ? clearHotel(h.city) : pickHotel(h))} className={`btn btn-sm btn-block ${picked ? "btn-navy" : "btn-outline"}`}>{picked ? <><Check size={14} />Added to Umrah estimate</> : <><Plus size={14} />Add to Umrah estimate</>}</button>}
       title={h.name}
       location={h.distanceM != null ? `${h.distanceM} m to ${PLACE[h.city]} (${METHOD[h.method] || METHOD.unverified})` : "Distance being measured"}
       detail={used ? `Used in: ${used}` : undefined}
@@ -34,6 +37,7 @@ export default function HotelsPage() {
   const [city, setCity] = useState("all");
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("name");
+  const chosen = Object.entries(useEstimateHotels()).filter(([, h]) => h);
   // Work out which packages mention each hotel (the brochure names hotels inside the package text)
   const hotels = useMemo(() => HOTELS.map((h) => ({
     ...h,
@@ -61,6 +65,12 @@ export default function HotelsPage() {
           </div>
           <SortSelect value={sort} onChange={setSort} options={[["name", "Name"], ["distance", "Nearest first"]]} />
         </FilterBar>
+        {chosen.length > 0 && (
+          <div className="note mt-4 flex flex-wrap items-center justify-between gap-3" role="status">
+            <span>In your Umrah estimate: {chosen.map(([c, h]) => `${h.name} (${c})`).join(" · ")}</span>
+            <a href="#/estimate" className="btn-text">Open the estimate</a>
+          </div>
+        )}
         <ResultCount>{list.length} of {hotels.length} hotels</ResultCount>
         {[["Makkah", "Near Masjid al-Haram"], ["Madinah", "Near Masjid an-Nabawi"]].map(([c, sub]) => {
           const items = list.filter((h) => h.city === c);

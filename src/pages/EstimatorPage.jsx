@@ -4,6 +4,8 @@ import { EST } from "@/data";
 import { taka } from "@/lib/utils";
 import { PageTitle, WHATSAPP } from "@/Layout";
 import { LinkButton } from "@/components/ui/kit";
+import { HOTELS } from "@/content/hotels";
+import { pickHotel, clearHotel, useEstimateHotels } from "@/lib/estimateHotels";
 
 const Stepper = ({ label, value, set, min = 0, max = 20, hint }) => (
   <div className="flex items-center justify-between gap-3 py-2">
@@ -48,6 +50,8 @@ export default function EstimatorPage() {
   const up = (k) => (v) => setS((p) => ({ ...p, [k]: v }));
   const r = useMemo(() => compute(s), [s]);
   const groups = [...new Set(r.lines.map((l) => l.group))];
+  const hotels = useEstimateHotels();
+  const chosen = Object.entries(hotels).filter(([, h]) => h).map(([c, h]) => `${h.name} (${c})`);
   return (
     <>
       <PageTitle eyebrow="Umrah cost estimator" title="Estimate your Umrah">Umrah can be taken any time, for any length, so the price depends on your choices. Change anything and the estimate updates. Hajj is sold at fixed seasonal prices, so use the Hajj finder for that.</PageTitle>
@@ -62,6 +66,20 @@ export default function EstimatorPage() {
           <Card title="How long">
             <Stepper label="Nights in Makkah" value={s.mk} set={up("mk")} max={40} />
             <Stepper label="Nights in Madinah" value={s.md} set={up("md")} max={40} />
+          </Card>
+          <Card title="Your hotels (optional)">
+            <p className="muted mb-3 text-sm">Pick the hotels you prefer. The price still comes from the hotel level you choose below, and we confirm your hotel and its price in the written quotation.</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {["Makkah", "Madinah"].map((city) => (
+                <label key={city} className="block text-sm font-medium text-navy">{city}
+                  <select value={hotels[city]?.id || ""} onChange={(e) => (e.target.value ? pickHotel(HOTELS.find((h) => h.id === e.target.value)) : clearHotel(city))} className="field mt-1.5">
+                    <option value="">No preference</option>
+                    {HOTELS.filter((h) => h.city === city).map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}
+                  </select>
+                </label>
+              ))}
+            </div>
+            <a href="#/hotels" className="btn-text mt-3">Browse the hotel directory</a>
           </Card>
           {EST.choices.map((c) => (
             <Card key={c.id} title={c.label}>
@@ -84,13 +102,14 @@ export default function EstimatorPage() {
             {groups.map((g) => (<div key={g}><p className="label !text-mid">{g}</p>
               {r.lines.filter((l) => l.group === g).map((l) => <div key={l.label} className="mt-1.5 flex justify-between gap-3"><div><p className="text-navy">{l.label}</p><p className="faint">{l.detail}</p></div><span className="shrink-0 tabular-nums">{taka(l.amount)}</span></div>)}</div>))}
           </div>
+          {chosen.length > 0 && <p className="note mt-4"><b>Your hotels:</b> {chosen.join(" · ")}</p>}
           <dl className="mt-4 space-y-1 border-t border-mid/20 pt-3 text-sm text-navy-deep/75">
             <div className="flex justify-between"><dt>Subtotal</dt><dd>{taka(r.sub)}</dd></div>
             <div className="flex justify-between"><dt>Service charge ({EST.serviceChargePct}%)</dt><dd>{taka(r.service)}</dd></div>
             <div className="flex justify-between"><dt>Price-change buffer ({EST.contingencyPct}%)</dt><dd>{taka(r.cont)}</dd></div>
           </dl>
           <div className="mt-3 border-t border-mid/20 pt-3"><p className="faint">Estimated total for the group · {r.rooms} room{r.rooms > 1 ? "s" : ""}</p><p className="price !text-3xl">{taka(r.total)}</p><p className="faint">About {taka(r.perPerson)} per person</p></div>
-          <LinkButton block className="mt-4" target="_blank" rel="noopener noreferrer" href={`${WHATSAPP}?text=${encodeURIComponent(`I estimated Umrah for ${s.adults} adult(s), ${s.children} child(ren), ${s.infants} infant(s): ${taka(r.total)}. Please send a confirmed quotation.`)}`}>Request confirmed quotation</LinkButton>
+          <LinkButton block className="mt-4" target="_blank" rel="noopener noreferrer" href={`${WHATSAPP}?text=${encodeURIComponent(`I estimated Umrah for ${s.adults} adult(s), ${s.children} child(ren), ${s.infants} infant(s): ${taka(r.total)}.${chosen.length ? ` Preferred hotels: ${chosen.join(", ")}.` : ""} Please send a confirmed quotation.`)}`}>Request confirmed quotation</LinkButton>
           <p className="faint mt-3">This is an estimate, not an offer. Flights, hotels and exchange rates change.</p>
         </aside>
       </div>

@@ -9,7 +9,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 /** One card. Every card has the same fixed size, whatever the text. */
 export function CarouselCard({ title, image, imageAlt = "", placeholder, badge, location, detail, footerLeft, footerRight, href, action }) {
   const body = (
-    <Card className="group relative flex h-[340px] w-full flex-col overflow-hidden rounded-xl border border-mid/20 shadow-sm transition-shadow duration-300 hover:shadow-md">
+    <Card className={`group relative flex ${action ? "h-[392px]" : "h-[340px]"} w-full flex-col overflow-hidden rounded-xl border border-mid/20 shadow-sm transition-shadow duration-300 hover:shadow-md`}>
       <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-t-xl bg-gradient-to-br from-sky to-white">
         {image
           ? <img src={image} alt={imageAlt} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
@@ -26,6 +26,7 @@ export function CarouselCard({ title, image, imageAlt = "", placeholder, badge, 
           <span className="flex items-center gap-1">{footerLeft}</span>
           <span className="ml-auto font-semibold tracking-tight text-navy">{footerRight}</span>
         </CardFooter>
+        {action && <div className="px-3 pb-3">{action}</div>}
       </div>
     </Card>
   );

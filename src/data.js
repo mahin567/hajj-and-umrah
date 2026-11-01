@@ -33,22 +33,23 @@ export const UPGRADES = {
 
 export const ROOM_LABEL = { 5: "5 per room", 4: "4 per room", 3: "3 per room", 2: "2 per room" };
 
+// Listed in the same order as the brochure (shifting packages first, then non-shifting). The site sorts by this order.
 // [slug, title, type, period, days, flight, makkah[min,max], madinah[min,max], aziziyah, makkahHotels, madinahHotels, prices, summary]
 const RAW = [
+  ["short-17-day-2027", "17-Day Short Hajj Package 2027", "shifting", "akhir", 18, "1/2 – 16/17 Dhul Hijjah", [0, 100], [0, 250], 10, "Elaf Kinda / Makkah Tower / Safa Tower or equivalent", "Al Aqeeq / Mövenpick / Pullman or equivalent", P({ 4: 9.7, 3: 13.1, 2: 14.7 }), "For pilgrims who cannot be away for six weeks. 5–7 nights in Makkah before Hajj."],
+  ["short-14-day-2027", "14-Day Short Hajj Package 2027", "shifting", "akhir", 15, "3/4 – 16/17 Dhul Hijjah", [null, null], [0, 250], 10, "", "Al Aqeeq / Mövenpick / Pullman or equivalent", P({ 4: 8.4, 3: 10.6, 2: 11.7 }), "Our shortest Hajj. You go straight to Aziziyah on arrival, with no separate Makkah hotel before the Hajj days, and stay in Madinah afterwards."],
   ["exclusive-hajj-2027", "Exclusive Hajj Package 2027", "shifting", "awal", 40, "1/7 Dhul Qadah – 15/19 Dhul Hijjah", [0, 100], [0, 150], 11, "Elaf Kinda / Makkah Tower / Safa Tower or equivalent", "Al Aqeeq / Mövenpick / Pullman or equivalent", P({ 4: 10.9, 3: 14.9, 2: 16.9 }), "The closest we go to the Haram, with 18–20 nights in Makkah before Hajj."],
   ["luxury-hajj-2027", "Luxury Hajj Package 2027", "shifting", "awal", 40, "1/7 Dhul Qadah – 15/19 Dhul Hijjah", [0, 300], [0, 300], 11, "Elaf Kinda / Makkah Tower / Safa Tower or equivalent", "Abraj Taba / Grand Plaza Madinah or equivalent", P({ 4: 8.95, 3: 12.15, 2: 13.95 }), "Five-star hotels within 300 m of both Harams."],
   ["standard-hajj-2027", "Standard Hajj Package 2027", "shifting", "awal", 40, "1/7 Dhul Qadah – 15/19 Dhul Hijjah", [300, 600], [0, 300], 11, "Sunud Ajyad / Emaar Andalus or equivalent", "Madinah Star / Kayan Al Masi or equivalent", P({ 4: 7.45, 3: 9.95, 2: 11.15 }), "A comfortable walk to the Haram at a moderate price."],
   ["economy-hajj-2027", "Economy Hajj Package 2027", "shifting", "awal", 40, "1/7 Dhul Qadah – 15/19 Dhul Hijjah", [650, 850], [0, 300], 11, "Masar Al Ais / Emaar Dahir or equivalent", "Arjuan Sada / Karam Silver or equivalent", P({ 4: 6.4, 3: 8.1, 2: 8.9 }), "Our most affordable Hajj. The Makkah hotel is a longer walk, so a shuttle is used."],
-  ["short-17-day-2027", "17-Day Short Hajj Package 2027", "shifting", "akhir", 18, "1/2 – 16/17 Dhul Hijjah", [0, 100], [0, 250], 10, "Elaf Kinda / Makkah Tower / Safa Tower or equivalent", "Al Aqeeq / Mövenpick / Pullman or equivalent", P({ 4: 9.7, 3: 13.1, 2: 14.7 }), "For pilgrims who cannot be away for six weeks. 5–7 nights in Makkah before Hajj."],
-  ["short-14-day-2027", "14-Day Short Hajj Package 2027", "shifting", "akhir", 15, "3/4 – 16/17 Dhul Hijjah", [null, null], [0, 250], 10, "", "Al Aqeeq / Mövenpick / Pullman or equivalent", P({ 4: 8.4, 3: 10.6, 2: 11.7 }), "Our shortest Hajj. You go straight to Aziziyah on arrival, with no separate Makkah hotel before the Hajj days, and stay in Madinah afterwards."],
   ["short-nonshifting-a-2027", "Short Non-Shifting Hajj 2027 — Package A", "non_shifting", "akhir", 21, "20/22 days", [0, 300], [0, 150], 0, "Within 300 m of the Haram", "Within 150 m of Masjid an-Nabawi", P({ 5: 8.2, 4: 8.2, 3: 9.5, 2: 10.1 }), "One hotel in Makkah for the whole stay: you unpack once."],
   ["short-nonshifting-b-2027", "Short Non-Shifting Hajj 2027 — Package B", "non_shifting", "akhir", 21, "20/22 days", [0, 700], [0, 200], 0, "Within 700 m of the Haram", "Within 200 m of Masjid an-Nabawi", P({ 5: 7.0, 4: 7.0, 3: 7.5, 2: 7.7 }), "No change of hotel, at a lower price than Package A."],
   ["long-nonshifting-a-2027", "Long Non-Shifting Hajj 2027 — Package A", "non_shifting", "awal", 35, "30/40 days", [0, 300], [0, 150], 0, "Within 300 m of the Haram", "Within 150 m of Masjid an-Nabawi", P({ 5: 8.7, 4: 8.7, 3: 10.0, 2: 10.6 }), "The full season without changing hotel."],
   ["long-nonshifting-b-2027", "Long Non-Shifting Hajj 2027 — Package B", "non_shifting", "awal", 35, "30/40 days", [0, 700], [0, 200], 0, "Within 700 m of the Haram", "Within 200 m of Masjid an-Nabawi", P({ 5: 7.5, 4: 7.5, 3: 8.0, 2: 8.2 }), "The full season without changing hotel, at a lower price."],
 ];
 
-export const PACKAGES = RAW.map(([slug, title, type, period, days, flight, mk, md, aziziyah, mkHotels, mdHotels, prices, summary]) => ({
-  slug, title, type, period, days, flight, aziziyah, mkHotels, mdHotels, prices, summary,
+export const PACKAGES = RAW.map(([slug, title, type, period, days, flight, mk, md, aziziyah, mkHotels, mdHotels, prices, summary], order) => ({
+  order, slug, title, type, period, days, flight, aziziyah, mkHotels, mdHotels, prices, summary,
   makkah: { min: mk[0], max: mk[1], zone: zoneFor(mk[1]) },
   madinah: { min: md[0], max: md[1], zone: zoneFor(md[1]) },
   tent: "standard", // Mina–Arafah tent (D category) is included; VIP is a priced upgrade
