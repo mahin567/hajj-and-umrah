@@ -53,7 +53,7 @@ export default function App() {
   else if (page === "hotels") view = <HotelsPage />;
   if (!view) return <HomePage />;
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-clip">
       <Header />
       <main><Suspense fallback={<Loading />}>{view}</Suspense></main>
       <Footer />

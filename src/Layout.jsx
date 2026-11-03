@@ -60,11 +60,14 @@ export function Footer({ className }) {
 }
 
 export const PageTitle = ({ eyebrow, title, children }) => (
-  <div className="bg-sky">
-    <div className="wrap py-10 md:py-14">
-      <p className="eyebrow mb-2">{eyebrow}</p>
-      <h1 tabIndex={-1} id="page-title" className="text-3xl outline-none md:text-5xl">{title}</h1>
-      {children && <p className="muted mt-3 max-w-2xl">{children}</p>}
+  <div className="wrap pt-6 md:pt-8">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy-deep via-navy-deep to-navy px-6 py-9 text-white shadow-lg md:px-12 md:py-14">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(circle at 92% 0%, rgba(27,176,232,.38), transparent 55%)" }} />
+      <div className="relative">
+        <p className="eyebrow mb-2 !text-accent-light">{eyebrow}</p>
+        <h1 tabIndex={-1} id="page-title" className="text-3xl !text-white outline-none md:text-5xl">{title}</h1>
+        {children && <p className="mt-3 max-w-2xl text-white/80 [&_a]:text-accent-light [&_a]:underline">{children}</p>}
+      </div>
     </div>
   </div>
 );

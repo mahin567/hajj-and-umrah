@@ -5,6 +5,7 @@ export default {
     colors: {
       navy: { DEFAULT: "#1A5FA0", deep: "#0B2F55" },
       mid: "#1A8CC8",
+      gold: { DEFAULT: "#C9962B", light: "#F5E3B3", deep: "#8A6212" }, // warm accent for stars and highlights
       accent: { DEFAULT: "#1BB0E8", light: "#7AD3F5", foreground: "#0B2F55" },
       sky: "#EAF6FD", cream: "#F7FBFE",
       // shadcn-style tokens used by the testimonials block, mapped to the brand palette

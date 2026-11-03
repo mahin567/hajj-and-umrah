@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
@@ -7,20 +7,23 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 // Removed from the original: the favourite heart and the star rating, because this site has no favourites or ratings to show.
 
 /** One card. Every card has the same fixed size, whatever the text. */
-export function CarouselCard({ title, image, imageAlt = "", placeholder, badge, location, detail, footerLeft, footerRight, href, action }) {
+export function CarouselCard({ title, image, imageAlt = "", placeholder, badge, location, detail, footerLeft, footerRight, href, action, titleHref, imageHref, tall }) {
   const body = (
-    <Card className={`group relative flex ${action ? "h-[392px]" : "h-[340px]"} w-full flex-col overflow-hidden rounded-xl border border-mid/20 shadow-sm transition-shadow duration-300 hover:shadow-md`}>
+    <Card className={`group relative flex ${action || tall ? "h-[392px]" : "h-[340px]"} w-full flex-col overflow-hidden rounded-xl border border-mid/20 shadow-sm transition-shadow duration-300 hover:shadow-md`}>
       <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-t-xl bg-gradient-to-br from-sky to-white">
-        {image
-          ? <img src={image} alt={imageAlt} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-          : <div aria-hidden="true" className="flex h-full w-full items-center justify-center text-mid/60">{placeholder}</div>}
+        {(() => {
+          const pic = image
+            ? <img src={image} alt={imageAlt} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            : <div aria-hidden="true" className="flex h-full w-full items-center justify-center text-mid/60">{placeholder}</div>;
+          return imageHref ? <a href={imageHref} target="_blank" rel="noopener noreferrer" aria-label={`${imageAlt} (opens the hotel website)`} tabIndex={-1} className="block h-full w-full">{pic}</a> : pic;
+        })()}
         {badge && <Badge className="absolute left-2 top-2 rounded-md border-0 bg-white/90 px-1.5 py-0.5 text-xs font-medium text-navy-deep">{badge}</Badge>}
       </div>
       <div className="flex flex-1 flex-col justify-between">
         <CardContent className="space-y-0.5 p-3 pb-0">
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-5 text-navy-deep">{title}</h3>
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-5 text-navy-deep">{titleHref ? <a href={titleHref} target="_blank" rel="noopener noreferrer" className="link inline-flex items-center gap-1">{title}<ExternalLink size={12} aria-hidden="true" /><span className="sr-only"> (opens the hotel website)</span></a> : title}</h3>
           {location && <p className="line-clamp-1 text-xs text-navy-deep/70" title={location}>{location}</p>}
-          {detail && <p className="line-clamp-1 text-xs text-navy-deep/70" title={detail}>{detail}</p>}
+          {detail && <div className="pt-1 text-xs text-navy-deep/70">{detail}</div>}
         </CardContent>
         <CardFooter className="mt-auto gap-1 p-3 pt-0 text-xs text-navy-deep">
           <span className="flex items-center gap-1">{footerLeft}</span>

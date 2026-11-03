@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LazyMotion, domAnimation, m, useInView } from "framer-motion";
-import { ArrowRight, BadgeCheck, BookOpen, CalendarDays, Info, MapPin, MessageCircle, Phone, Route, Star, Users } from "lucide-react";
-import { Testimonials } from "@/components/ui/testimonials";
+import { ArrowRight, BadgeCheck, BookOpen, CalendarDays, Info, MapPin, MessageCircle, Phone, Star, Users } from "lucide-react";
+import { HelpDock, QuickHelp, RatingStrip, EasySteps, ReviewsShowcase, HotelGuide, FaqCards } from "@/components/home/HomeExtras";
 import { PACKAGES } from "@/data";
 import { PackageCarouselCard } from "@/components/PackageCarouselCard";
 import { AnimatedMarqueeHero } from "@/components/ui/hero-3";
@@ -26,27 +26,26 @@ const fmtPackage = (p) => ({
 });
 
 const FAQ = [
-  ["What is the difference between shifting and non-shifting Hajj?", "A shifting package includes a planned change of accommodation during the programme. A non-shifting package is designed to keep you in the stated accommodation, subject to the itinerary and official arrangements. Always check the schedule listed for each package."],
-  ["Are package prices final?", "No. Starting prices are estimates and can change with flights, hotel availability, occupancy and exchange rates. We provide a written confirmed quotation before any payment."],
-  ["What does '300 metres from the Haram' mean?", "It is the stated distance from the hotel to the relevant point at the Masjid. We label whether it is a walking-route or straight-line figure. Actual walking time varies."],
-  ["How do I know you are licensed?", "Our licence details are on this page and linked to the official government directory so you can verify them yourself."],
+  ["What is the difference between shifting and non-shifting Hajj?", "A shifting package includes a planned change of accommodation during the programme. A non-shifting package is designed to keep you in the stated accommodation, subject to the itinerary and official arrangements. Always check the schedule listed for each package.", "শিফটিং ও নন-শিফটিং হজ্জের পার্থক্য কী?", "শিফটিং প্যাকেজে হজ্জের সময় থাকার জায়গা পরিকল্পিতভাবে বদলানো হয়। নন-শিফটিং প্যাকেজে নির্ধারিত জায়গাতেই থাকার ব্যবস্থা রাখা হয়, তবে তা সফরসূচি ও সরকারি ব্যবস্থার ওপর নির্ভর করে। প্রতিটি প্যাকেজের সময়সূচি ভালো করে দেখে নিন।"],
+  ["Are package prices final?", "No. Starting prices are estimates and can change with flights, hotel availability, occupancy and exchange rates. We provide a written confirmed quotation before any payment.", "প্যাকেজের দাম কি চূড়ান্ত?", "না। শুরুর দাম আনুমানিক। ফ্লাইট, হোটেলের সিট, রুমে থাকার সংখ্যা ও ডলারের দামের কারণে দাম বদলাতে পারে। টাকা দেওয়ার আগে আমরা লিখিত নিশ্চিত কোটেশন দিই।"],
+  ["What does '300 metres from the Haram' mean?", "It is the stated distance from the hotel to the relevant point at the Masjid. We label whether it is a walking-route or straight-line figure. Actual walking time varies.", "“হারাম থেকে ৩০০ মিটার” মানে কী?", "এর মানে হোটেল থেকে মসজিদের নির্দিষ্ট স্থান পর্যন্ত দূরত্ব। এটি হাঁটার পথের দূরত্ব নাকি সোজা দূরত্ব, তা আমরা লিখে জানাই। হাঁটতে কতক্ষণ লাগবে তা মানুষভেদে আলাদা হয়।"],
+  ["How do I know you are licensed?", "Our licence details are on this page and linked to the official government directory so you can verify them yourself.", "আপনারা লাইসেন্সপ্রাপ্ত, তা বুঝব কীভাবে?", "আমাদের লাইসেন্সের তথ্য এই পাতায় আছে এবং সরকারি তালিকার সাথে যুক্ত, যাতে আপনি নিজেই যাচাই করতে পারেন।"],
 ];
 
 const JOURNEYS = [
   ["umrah", "Umrah", "Customize your own trip and see the cost change as you choose.", [["Group Umrah dates", "#/group-umrah"], ["Estimate my Umrah", "#/estimate"]]],
   ["hajj", "Hajj", "Compare shifting and non-shifting packages, or let the finder pick the closest match.", [["Find my Hajj", "#/find-your-hajj"], ["All packages", "#/packages"]]],
 ];
-const GUIDES = [
-  [Route, "Hotels & distance guide", "See hotel names, map pins and walking-route distances to Masjid al-Haram and Masjid an-Nabawi. Walking times are estimates, not guarantees.", ["#/hotels", "Browse hotels"]],
-  [BookOpen, "History & Ziyarah", "Learn about the sacred sites of Makkah and Madinah with reviewed, sourced descriptions and maps."],
-];
+const JOURNEY_IMG = {
+  umrah: ["hero-5", "Pilgrims in white ihram walking beside the Kaaba", "50% 60%"],
+  hajj: ["hero-3", "Crowds of pilgrims around the Kaaba with the Makkah clock tower behind", "50% 70%"],
+};
 const TRUST = [
   [BadgeCheck, "Verified licence", "Licence details linked to the official government directory."],
   [Users, "Shariah board", "Profiles of our scholars and the guidance they provide."],
   [BookOpen, "Past trips archive", "Every completed departure stays on record."],
   [Star, "Genuine reviews", "Moderated reviews from real pilgrims only."],
 ];
-const stars = (r) => "★".repeat(Math.min(5, Math.max(1, r || 5)));
 
 /* ================= Hero ================= */
 const WordsPullUp = ({ text }) => {
@@ -175,17 +174,32 @@ export default function HomePage() {
   const verify = safeHttps(LICENCE.verifyUrl);
   return (
     <LazyMotion features={domAnimation}>
-      <main className="bg-cream">
+      <main className="home-large bg-pattern pb-24 md:pb-0">
         <Hero />
 
         <Section>
           <SectionTitle eyebrow="Choose your journey">Umrah or Hajj</SectionTitle>
           <div className="grid gap-5 md:grid-cols-2">
             {JOURNEYS.map(([id, t, d, a]) => (
-              <article key={id} id={id} className="rounded-3xl border border-mid/30 bg-gradient-to-br from-sky to-white p-6 shadow-sm md:p-10">
-                <h3 className="text-3xl md:text-4xl">{t}</h3>
-                <p className="muted mt-3">{d}</p>
-                <div className="mt-6 flex flex-wrap gap-3">{a.map(([x, h]) => <LinkButton key={x} href={h} variant="navy" small>{x}</LinkButton>)}</div>
+              <article key={id} id={id} className="group overflow-hidden rounded-3xl border border-mid/30 bg-white shadow-md transition-shadow hover:shadow-xl">
+                <div className="relative h-60 overflow-hidden md:h-72">
+                  <img
+                    src={`/media/${JOURNEY_IMG[id][0]}-900.webp`}
+                    srcSet={`/media/${JOURNEY_IMG[id][0]}-900.webp 900w, /media/${JOURNEY_IMG[id][0]}-1600.webp 1600w`}
+                    sizes="(min-width: 768px) 45vw, 100vw"
+                    alt={JOURNEY_IMG[id][1]}
+                    loading="lazy"
+                    decoding="async"
+                    style={{ objectPosition: JOURNEY_IMG[id][2] }}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/85 via-navy-deep/20 to-transparent" aria-hidden="true" />
+                  <h3 className="absolute bottom-4 left-6 text-4xl font-bold text-white drop-shadow md:bottom-5 md:left-8 md:text-5xl">{t}</h3>
+                </div>
+                <div className="p-6 md:p-8">
+                  <p className="muted">{d}</p>
+                  <div className="mt-6 flex flex-wrap gap-3">{a.map(([x, h]) => <LinkButton key={x} href={h} variant="navy" small>{x}</LinkButton>)}</div>
+                </div>
               </article>
             ))}
           </div>
@@ -205,29 +219,11 @@ export default function HomePage() {
           items={PACKAGES.map((p, i) => <PackageCarouselCard key={p.slug} p={p} index={i} />)}
         />
 
-        <Section tone="sky" className="!pt-0">
-          <div className="mx-auto mb-12 flex max-w-2xl items-start justify-center gap-3 rounded-2xl border border-mid/30 bg-white px-6 py-4 text-center shadow-sm md:mb-16">
-            <Info size={18} className="mt-0.5 shrink-0 text-mid" />
-            <p className="text-sm text-navy-deep/75">Prices are estimates. A written quotation is provided after availability is confirmed.</p>
-          </div>
-          {packages.length > 0 && (
-            <>
-              <SectionTitle eyebrow="Open for booking">Upcoming departures</SectionTitle>
-              <div className="grid-cards">{packages.map((p) => <DepartureCard key={p.id} p={p} />)}</div>
-            </>
-          )}
-        </Section>
+        <EasySteps />
 
-        <section className="wrap section defer grid gap-5 md:grid-cols-2">
-          {GUIDES.map(([I, t, d, link]) => (
-            <article key={t} className="panel md:!p-8">
-              <I className="text-mid" size={28} />
-              <h3 className="mt-4 text-2xl">{t}</h3>
-              <p className="muted mt-2">{d}</p>
-              {link ? <a href={link[0]} className="btn-text mt-5">{link[1]} <ArrowRight size={16} /></a> : <span className="faint mt-5 inline-block text-sm">Coming soon</span>}
-            </article>
-          ))}
-        </section>
+        <QuickHelp />
+
+        <HotelGuide />
 
         <Section id="trust" tone="sky">
           <SectionTitle eyebrow="Trust centre">Why pilgrims trust us</SectionTitle>
@@ -247,45 +243,14 @@ export default function HomePage() {
           </p>
         </Section>
 
+
         {/* Reviews: only real, moderated reviews are shown. Nothing is invented. */}
-        <Section id="reviews">
-          {reviews.length ? (
-            <Testimonials title="What pilgrims say" description="Moderated reviews from pilgrims who travelled with us."
-              testimonials={reviews.map((r) => ({ name: r.name, username: stars(r.rating), text: r.text }))} />
-          ) : (
-            <>
-              <SectionTitle eyebrow="Reviews & stories">What pilgrims say</SectionTitle>
-              <div className="panel-empty">Published reviews and success stories will appear here after moderation and consent.</div>
-            </>
-          )}
-        </Section>
+        <ReviewsShowcase reviews={reviews} />
 
-        <Section id="faq" tone="sky" narrow>
-          <SectionTitle eyebrow="FAQ">Common questions</SectionTitle>
-          <div className="space-y-3">
-            {FAQ.map(([q, a]) => (
-              <details key={q} className="group panel !p-5">
-                <summary className="flex items-center justify-between gap-3 font-medium text-navy">{q}<span aria-hidden="true" className="text-mid transition-transform group-open:rotate-45">+</span></summary>
-                <p className="mt-3 text-sm text-navy-deep/75">{a}</p>
-              </details>
-            ))}
-          </div>
-        </Section>
-
-        <section id="contact" className="defer p-2 sm:p-3">
-          <div className="rounded-2xl bg-navy-deep px-6 py-16 text-center text-white md:rounded-[2rem] md:py-24">
-            <h2 className="mx-auto max-w-2xl text-3xl text-white md:text-5xl">Speak with an advisor about your journey</h2>
-            <p className="mx-auto mt-4 max-w-xl text-white/70">Book a consultation or message us directly. We reply with a confirmed quotation.</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <LinkButton href="#/book">Book appointment</LinkButton>
-              <LinkButton href={WHATSAPP} target="_blank" rel="noopener noreferrer" variant="ghost-light"><MessageCircle size={16} />WhatsApp</LinkButton>
-              <LinkButton href={PHONE} variant="ghost-light"><Phone size={16} />Call us</LinkButton>
-            </div>
-            <EnquiryForm />
-          </div>
-        </section>
+        <FaqCards items={FAQ} />
 
         <Footer className="mt-0" />
+        <HelpDock />
       </main>
     </LazyMotion>
   );
