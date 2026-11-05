@@ -13,6 +13,7 @@ const BookPage = lazy(() => import("@/pages/BookPage"));
 const TrustPage = lazy(() => import("@/pages/TrustPage"));
 const GroupUmrahPage = lazy(() => import("@/pages/GroupUmrahPage"));
 const HotelsPage = lazy(() => import("@/pages/HotelsPage"));
+const AdminPage = lazy(() => import("@/pages/AdminPage"));
 
 const TITLES = {
   packages: "Hajj packages 2027", "group-umrah": "Group Umrah departures", "find-your-hajj": "Find your Hajj",
@@ -36,11 +37,16 @@ export default function App() {
     return () => window.removeEventListener("hashchange", on);
   }, []);
   const [page, arg] = path.split("/");
+  // If anything ever pushed the page sideways, bring it back to the left edge on every page change
+  useEffect(() => { const el = document.scrollingElement; if (el) el.scrollLeft = 0; }, [page, arg]);
   useEffect(() => {
     document.title = TITLES[page] ? `${TITLES[page]} | ${SITE}` : SITE;
     // move keyboard focus to the new page heading (screen readers announce the change)
     if (TITLES[page]) requestAnimationFrame(() => document.getElementById("page-title")?.focus({ preventScroll: true }));
   }, [page, arg]);
+
+  // The private admin panel has its own layout (no public header or footer)
+  if (page === "admin") return <Suspense fallback={<Loading />}><AdminPage section={arg || ""} /></Suspense>;
 
   let view = null;
   if (page === "packages") view = arg ? <PackageDetail slug={arg} /> : <PackagesPage />;
@@ -53,7 +59,7 @@ export default function App() {
   else if (page === "hotels") view = <HotelsPage />;
   if (!view) return <HomePage />;
   return (
-    <div className="min-h-screen overflow-x-clip">
+    <div className="relative min-h-screen w-full max-w-full overflow-x-clip">
       <Header />
       <main><Suspense fallback={<Loading />}>{view}</Suspense></main>
       <Footer />

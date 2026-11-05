@@ -69,7 +69,7 @@ export default function HotelsPage() {
   return (
     <>
       <PageTitle eyebrow="Where you stay" title="Hotel directory">The hotels used in our packages, with distance to the Haram or Masjid an-Nabawi, photos (once added) and a map link. Distances are labelled by how they were measured. <a href="#/zones" className="link">How zones work</a></PageTitle>
-      <section className="wrap page-body">
+      <section className="wrap min-w-0 page-body">
         <FilterBar>
           <div className="relative md:w-72">
             <Search size={16} aria-hidden="true" className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-mid" />
@@ -84,7 +84,7 @@ export default function HotelsPage() {
         {[["Makkah", "Near Masjid al-Haram"], ["Madinah", "Near Masjid an-Nabawi"]].map(([c, sub]) => {
           const items = list.filter((h) => h.city === c);
           return items.length ? (
-            <CarouselSection key={c} title={`${c} hotels`} subtitle={`${sub} · ${items.length} ${items.length === 1 ? "hotel" : "hotels"}`}>
+            <CarouselSection grid key={c} title={`${c} hotels`} subtitle={`${sub} · ${items.length} ${items.length === 1 ? "hotel" : "hotels"}`}>
               {items.map((h, i) => <HotelCard key={h.id} h={h} i={i} />)}
             </CarouselSection>
           ) : null;
@@ -93,21 +93,33 @@ export default function HotelsPage() {
         <section className="mt-12" aria-labelledby="pkg-hotels">
           <h2 id="pkg-hotels" className="text-2xl md:text-3xl">Which package includes which hotel</h2>
           <p className="muted mt-2 max-w-2xl">Open any package to see its full programme, prices and room options.</p>
-          <div className="mt-5 overflow-x-auto rounded-2xl border border-mid/25 bg-white shadow-sm">
-            <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="bg-sky text-navy-deep"><tr><th className="p-3 font-semibold">Package</th><th className="p-3 font-semibold">Makkah hotels</th><th className="p-3 font-semibold">Madinah hotels</th><th className="p-3"><span className="sr-only">Details</span></th></tr></thead>
+          <div className="mt-5 hidden overflow-hidden rounded-2xl border border-mid/25 bg-white shadow-sm md:block">
+            <table className="w-full table-fixed text-left text-sm">
+              <thead className="bg-sky text-navy-deep"><tr><th className="w-[30%] p-3 font-semibold">Package</th><th className="p-3 font-semibold">Makkah hotels</th><th className="p-3 font-semibold">Madinah hotels</th><th className="w-36 p-3"><span className="sr-only">Details</span></th></tr></thead>
               <tbody className="divide-y divide-mid/15">
                 {PACKAGES.map((p) => (
                   <tr key={p.slug} className="align-top">
                     <th scope="row" className="p-3 font-semibold text-navy"><a href={`#/packages/${p.slug}`} className="link">{p.title}</a></th>
-                    <td className="p-3 text-navy-deep/80">{p.mkHotels || "No separate Makkah hotel before Hajj"}</td>
-                    <td className="p-3 text-navy-deep/80">{p.mdHotels}</td>
+                    <td className="break-words p-3 text-navy-deep/80">{p.mkHotels || "No separate Makkah hotel before Hajj"}</td>
+                    <td className="break-words p-3 text-navy-deep/80">{p.mdHotels}</td>
                     <td className="p-3 text-right"><a href={`#/packages/${p.slug}`} className="btn btn-navy btn-sm whitespace-nowrap">View package</a></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          <ul className="mt-5 space-y-3 md:hidden">
+            {PACKAGES.map((p) => (
+              <li key={p.slug} className="rounded-2xl border border-mid/25 bg-white p-4 shadow-sm">
+                <a href={`#/packages/${p.slug}`} className="link font-semibold">{p.title}</a>
+                <dl className="mt-2 space-y-2 text-sm text-navy-deep/80">
+                  <div><dt className="label !text-mid">Makkah</dt><dd className="break-words">{p.mkHotels || "No separate Makkah hotel before Hajj"}</dd></div>
+                  <div><dt className="label !text-mid">Madinah</dt><dd className="break-words">{p.mdHotels}</dd></div>
+                </dl>
+                <a href={`#/packages/${p.slug}`} className="btn btn-navy btn-sm mt-3">View package</a>
+              </li>
+            ))}
+          </ul>
         </section>
         <p className="faint mt-8">Some packages list a hotel “or equivalent”. The hotel you receive is confirmed in your written quotation.</p>
       </section>
